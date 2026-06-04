@@ -108,7 +108,7 @@
                 @csrf
                 <label style="font-size: 12px; color: #95a5a6; margin-bottom: 8px; display: block;">Switch Role:</label>
                 <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
-                    @foreach(json_decode(auth()->user()->available_roles, true) as $role)
+                    @foreach(auth()->user()->available_roles as $role)
                     <option value="{{ $role }}" @if(auth()->user()->current_role === $role) selected @endif>
                         {{ str_replace('_', ' ', ucfirst($role)) }}
                     </option>

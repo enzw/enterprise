@@ -4,17 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Subsidiary;
-use App\Models\Department;
-use App\Models\Location;
-use App\Models\Account;
-use App\Models\TaxSchedule;
+use App\Models\MasterData;
 use App\Models\Item;
 use App\Models\ItemAccount;
 use App\Models\Vendor;
 use App\Models\Customer;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Department;
+use App\Models\Location;
+use App\Models\Account;
+use App\Models\TaxSchedule;
 
+// Import classes from MasterData namespace
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
@@ -204,55 +204,7 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // Create users
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'default_role' => 'admin',
-            'current_role' => 'admin',
-            'available_roles' => json_encode(['admin', 'purchasing_manager', 'inventory_manager', 'ap_analyst', 'accounting_manager', 'sales_representative', 'sales_manager', 'ar_analyst']),
-            'subsidiary_id' => $subsidiary->id,
-        ]);
-
-        User::create([
-            'name' => 'Purchasing Manager',
-            'email' => 'purchasing@example.com',
-            'password' => Hash::make('password'),
-            'default_role' => 'purchasing_manager',
-            'current_role' => 'purchasing_manager',
-            'available_roles' => json_encode(['purchasing_manager']),
-            'subsidiary_id' => $subsidiary->id,
-        ]);
-
-        User::create([
-            'name' => 'Inventory Manager',
-            'email' => 'inventory@example.com',
-            'password' => Hash::make('password'),
-            'default_role' => 'inventory_manager',
-            'current_role' => 'inventory_manager',
-            'available_roles' => json_encode(['inventory_manager']),
-            'subsidiary_id' => $subsidiary->id,
-        ]);
-
-        User::create([
-            'name' => 'AP Analyst',
-            'email' => 'ap@example.com',
-            'password' => Hash::make('password'),
-            'default_role' => 'ap_analyst',
-            'current_role' => 'ap_analyst',
-            'available_roles' => json_encode(['ap_analyst']),
-            'subsidiary_id' => $subsidiary->id,
-        ]);
-
-        User::create([
-            'name' => 'Sales Representative',
-            'email' => 'sales@example.com',
-            'password' => Hash::make('password'),
-            'default_role' => 'sales_representative',
-            'current_role' => 'sales_representative',
-            'available_roles' => json_encode(['sales_representative']),
-            'subsidiary_id' => $subsidiary->id,
-        ]);
+        // Seed users via UserSeeder
+        $this->call(UserSeeder::class);
     }
 }

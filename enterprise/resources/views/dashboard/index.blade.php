@@ -14,11 +14,11 @@
                 <div class="card-body">
                     <p>Current Role: <span class="badge bg-info">{{ str_replace('_', ' ', strtoupper(auth()->user()->current_role)) }}</span></p>
                     
-                    @if(count(json_decode(auth()->user()->available_roles, true)) > 1)
+                    @if(count(auth()->user()->available_roles) > 1)
                     <div class="alert alert-info">
                         <h6>Available Roles:</h6>
                         <p>
-                            @foreach(json_decode(auth()->user()->available_roles, true) as $role)
+                            @foreach(auth()->user()->available_roles as $role)
                             <span class="badge bg-secondary">{{ str_replace('_', ' ', ucfirst($role)) }}</span>
                             @endforeach
                         </p>
