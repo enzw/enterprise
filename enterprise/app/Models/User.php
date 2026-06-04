@@ -22,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'default_role',
+        'current_role',
+        'available_roles',
+        'subsidiary_id',
     ];
 
     /**
@@ -44,6 +48,28 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'available_roles' => 'json',
         ];
+    }
+
+    public function subsidiary()
+    {
+        return $this->belongsTo(Subsidiary::class);
+    }
+
+    public function canAccessRole($role)
+    {
+        $roles = is_array($this->available_roles) ? $this->available_roles : json_decode($this->available_roles, true);
+        return in_array($role, $roles);
+    }
+
+    public function switchRole($role)
+    {
+        if ($this->canAccessRole($role)) {
+            $this->current_role = $role;
+            $this->save();
+            return true;
+        }
+        return false;
     }
 }
