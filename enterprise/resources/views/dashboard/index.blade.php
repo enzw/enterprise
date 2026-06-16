@@ -172,6 +172,36 @@
             </div>
         </div>
         @endif
+
+        <!-- Customer Payments (AR) -->
+        @if(in_array(auth()->user()->current_role, ['admin', 'ar_analyst']))
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100 card-interactive">
+                <div class="card-body d-flex flex-column p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="p-3 rounded-3 bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-cash-coin fs-4"></i>
+                        </div>
+                        <span class="badge bg-success bg-opacity-10 text-success">Accounts Receivable</span>
+                    </div>
+                    
+                    <h5 class="fw-700 text-main mb-2" style="font-weight: 700;">Customer Payments (AR)</h5>
+                    <p class="text-muted small flex-grow-1">
+                        Record customer payments, allocate to invoices, track collections, and manage aged receivables.
+                    </p>
+                    
+                    <div class="d-flex gap-2 mt-3 pt-3 border-top border-light">
+                        <a href="{{ route('payments.index') }}" class="btn btn-sm btn-light flex-grow-1">
+                            <i class="bi bi-list-nested me-1"></i> Payments
+                        </a>
+                        <a href="{{ route('payments.create') }}" class="btn btn-sm btn-primary flex-grow-1">
+                            <i class="bi bi-plus-lg me-1"></i> Record Payment
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 

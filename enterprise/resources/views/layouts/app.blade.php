@@ -588,6 +588,18 @@
         </div>
         @endif
 
+        @if(in_array(auth()->user()->current_role, ['admin', 'ar_analyst']))
+        <div class="nav-section">
+            <h6>Customer Payments (AR)</h6>
+            <a href="{{ route('payments.index') }}" class="{{ request()->routeIs('payments.index') ? 'active' : '' }}">
+                <i class="bi bi-cash-coin"></i> Payments
+            </a>
+            <a href="{{ route('payments.create') }}" class="{{ request()->routeIs('payments.create') ? 'active' : '' }}">
+                <i class="bi bi-plus-circle"></i> Record Payment
+            </a>
+        </div>
+        @endif
+
         <form method="POST" action="{{ route('logout') }}" style="margin-top: auto;">
             @csrf
             <button type="submit" class="logout-btn">

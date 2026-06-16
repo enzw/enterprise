@@ -8,6 +8,7 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\ItemReceiptController;
 use App\Http\Controllers\VendorBillController;
 use App\Http\Controllers\SalesOrderController;
+use App\Http\Controllers\CustomerPaymentController;
 
 // Auth Routes
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
@@ -58,5 +59,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/{salesOrder}/request-approval', [SalesOrderController::class, 'requestApproval'])->name('sales-orders.request-approval');
         Route::post('/{salesOrder}/approve', [SalesOrderController::class, 'approve'])->name('sales-orders.approve');
         Route::post('/{salesOrder}/reject', [SalesOrderController::class, 'reject'])->name('sales-orders.reject');
+    });
+
+    // Customer Payments
+    Route::prefix('payments')->group(function () {
+        Route::get('/', [CustomerPaymentController::class, 'index'])->name('payments.index');
+        Route::get('/create', [CustomerPaymentController::class, 'create'])->name('payments.create');
+        Route::post('/', [CustomerPaymentController::class, 'store'])->name('payments.store');
+        Route::get('/{customerPayment}', [CustomerPaymentController::class, 'show'])->name('payments.show');
+        Route::get('/{customerPayment}/edit', [CustomerPaymentController::class, 'edit'])->name('payments.edit');
+        Route::put('/{customerPayment}', [CustomerPaymentController::class, 'update'])->name('payments.update');
+        Route::post('/{customerPayment}/allocate', [CustomerPaymentController::class, 'allocate'])->name('payments.allocate');
+        Route::delete('/allocations/{customerPaymentAllocation}', [CustomerPaymentController::class, 'removeAllocation'])->name('payments.remove-allocation');
+        Route::get('/customer/{customerId}/invoices', [CustomerPaymentController::class, 'getCustomerInvoices'])->name('payments.customer-invoices');
     });
 });
