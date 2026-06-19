@@ -10,10 +10,20 @@
         <div class="col-md-7 text-end d-flex gap-2 justify-content-end">
             <a href="{{ route('sales-invoices.index') }}" class="btn btn-secondary">Invoice List</a>
             <a href="{{ route('sales-orders.show', $invoice->salesOrder) }}" class="btn btn-primary">View SO</a>
-            @if(in_array(auth()->user()->current_role, ['admin', 'accounting_manager']) && $invoice->status === 'draft')
+            @if(in_array(auth()->user()->current_role, ['admin', 'ar_analyst']) && $invoice->status === 'draft')
+                <form method="POST" action="{{ route('sales-invoices.submit', $invoice) }}">
+                    @csrf
+                    <button class="btn btn-primary" type="submit">Submit for Approval</button>
+                </form>
+            @endif
+            @if(in_array(auth()->user()->current_role, ['admin', 'accounting_manager']) && $invoice->status === 'pending_approval')
                 <form method="POST" action="{{ route('sales-invoices.approve', $invoice) }}">
                     @csrf
                     <button class="btn btn-success" type="submit">Approve Invoice</button>
+                </form>
+                <form method="POST" action="{{ route('sales-invoices.reject', $invoice) }}">
+                    @csrf
+                    <button class="btn btn-danger" type="submit">Reject Invoice</button>
                 </form>
             @endif
             @if(in_array(auth()->user()->current_role, ['admin', 'ar_analyst']) && $invoice->status === 'draft')

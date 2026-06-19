@@ -232,7 +232,13 @@
                         <tr>
                             <td><a href="{{ route('sales-invoices.show', $invoice) }}">{{ $invoice->invoice_number }}</a></td>
                             <td>{{ $invoice->invoice_date->format('Y-m-d') }}</td>
-                            <td><span class="badge bg-secondary">{{ ucfirst($invoice->status) }}</span></td>
+                            <td>
+                                @if($invoice->status === 'pending_approval')
+                                    <span class="badge bg-warning text-dark">Pending Approval</span>
+                                @else
+                                    <span class="badge bg-secondary">{{ ucfirst($invoice->status) }}</span>
+                                @endif
+                            </td>
                             <td class="text-end">${{ number_format($invoice->total, 2) }}</td>
                             <td class="text-end">${{ number_format($invoice->amount_paid, 2) }}</td>
                         </tr>

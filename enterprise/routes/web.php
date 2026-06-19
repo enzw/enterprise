@@ -88,7 +88,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('sales-invoices')->group(function () {
         Route::get('/', [SalesInvoiceController::class, 'index'])->name('sales-invoices.index');
         Route::get('/{invoice}', [SalesInvoiceController::class, 'show'])->name('sales-invoices.show');
+        Route::post('/{invoice}/submit', [SalesInvoiceController::class, 'submit'])->name('sales-invoices.submit');
         Route::post('/{invoice}/approve', [SalesInvoiceController::class, 'approve'])->name('sales-invoices.approve');
+        Route::post('/{invoice}/reject', [SalesInvoiceController::class, 'reject'])->name('sales-invoices.reject');
         Route::post('/{invoice}/cancel', [SalesInvoiceController::class, 'cancel'])->name('sales-invoices.cancel');
     });
     Route::get('/sales-orders/{salesOrder}/invoice', [SalesInvoiceController::class, 'create'])->name('sales-invoices.create');

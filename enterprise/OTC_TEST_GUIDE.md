@@ -109,12 +109,26 @@ Expected:
 - Invoice status is **Draft**.
 - The same shipped quantity cannot be invoiced twice.
 
-## 6. Approve the Sales Invoice
+## 6. Submit the Sales Invoice for approval
+
+1. While still using **AR Analyst**, open the draft invoice.
+2. Review the invoice lines and total.
+3. Click **Submit for Approval**.
+
+Expected:
+
+- Invoice status becomes **Pending Approval**.
+- The invoice is now available for Accounting Manager review.
+- The AR Analyst cannot approve the invoice.
+
+## 7. Approve the Sales Invoice
 
 1. Switch to **Accounting Manager**.
 2. Open **Sales Invoices**.
-3. Open the draft invoice.
+3. Open the invoice with status **Pending Approval**.
 4. Click **Approve Invoice**.
+
+The Accounting Manager can click **Reject Invoice** instead. A rejected invoice returns to **Draft**, allowing the AR Analyst to review, cancel, or resubmit it.
 
 Expected:
 
@@ -123,7 +137,7 @@ Expected:
 - Sales Revenue increases by `$400.00`.
 - Customer credit used increases by `$400.00`.
 
-## 7. Record a partial customer payment
+## 8. Record a partial customer payment
 
 1. Switch to **AR Analyst**.
 2. Open the approved invoice.
@@ -146,7 +160,7 @@ Expected:
 - Cash increases by `$200.00`.
 - Accounts Receivable and customer credit used decrease by `$200.00`.
 
-## 8. Complete the first invoice payment
+## 9. Complete the first invoice payment
 
 1. Create another customer payment for `200`.
 2. Allocate it to the same invoice.
@@ -157,7 +171,7 @@ Expected:
 - Invoice balance becomes `$0.00`.
 - Both payment allocations appear on the invoice.
 
-## 9. Fulfill the remaining quantity
+## 10. Fulfill the remaining quantity
 
 1. Switch to **Inventory Manager**.
 2. Open the same Sales Order.
@@ -171,12 +185,13 @@ Expected:
 - Sales Order status becomes **Shipped**.
 - Warehouse on-hand stock has decreased by a total of `5`.
 
-## 10. Invoice and receive payment for the remainder
+## 11. Invoice and receive payment for the remainder
 
 1. Switch to **AR Analyst**.
 2. Create another invoice from the Sales Order for quantity `3`.
-3. Switch to **Accounting Manager** and approve it.
-4. Switch to **AR Analyst** and record a `$600.00` payment allocated to the second invoice.
+3. Click **Submit for Approval**.
+4. Switch to **Accounting Manager** and approve it.
+5. Switch to **AR Analyst** and record a `$600.00` payment allocated to the second invoice.
 
 Expected final state:
 

@@ -147,6 +147,19 @@ class SalesInvoiceController extends Controller
         return view('sales-invoices.show', compact('invoice'));
     }
 
+    public function submit(SalesInvoice $invoice)
+    {
+        $this->checkRole('ar_analyst', 'admin');
+
+        if ($invoice->status !== 'draft') {
+            return redirect()->back()->with('error', 'Only draft invoices can be submitted for approval');
+        }
+
+        $invoice->update(['status' => 'pending_approval']);
+
+        return redirect()->back()->with('success', 'Sales Invoice submitted to the Accounting Manager');
+    }
+
     public function approve(SalesInvoice $invoice)
     {
         $this->checkRole('accounting_manager', 'admin');
@@ -156,9 +169,9 @@ class SalesInvoiceController extends Controller
                 ->lockForUpdate()
                 ->findOrFail($invoice->id);
 
-            if ($invoice->status !== 'draft') {
+            if ($invoice->status !== 'pending_approval') {
                 throw ValidationException::withMessages([
-                    'status' => 'Only draft invoices can be approved.',
+                    'status' => 'Only invoices pending approval can be approved.',
                 ]);
             }
 
@@ -198,6 +211,19 @@ class SalesInvoiceController extends Controller
         });
 
         return redirect()->back()->with('success', 'Sales Invoice approved and posted to Accounts Receivable');
+    }
+
+    public function reject(SalesInvoice $invoice)
+    {
+        $this->checkRole('accounting_manager', 'admin');
+
+        if ($invoice->status !== 'pending_approval') {
+            return redirect()->back()->with('error', 'Only invoices pending approval can be rejected');
+        }
+
+        $invoice->update(['status' => 'draft']);
+
+        return redirect()->back()->with('success', 'Sales Invoice returned to draft for review and resubmission');
     }
 
     public function cancel(SalesInvoice $invoice)

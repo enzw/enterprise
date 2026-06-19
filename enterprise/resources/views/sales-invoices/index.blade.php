@@ -22,7 +22,21 @@
                             <td><strong>{{ $invoice->invoice_number }}</strong></td>
                             <td>{{ $invoice->customer->name }}</td>
                             <td><a href="{{ route('sales-orders.show', $invoice->salesOrder) }}">{{ $invoice->salesOrder->so_number }}</a></td>
-                            <td><span class="badge bg-secondary">{{ ucfirst($invoice->status) }}</span></td>
+                            <td>
+                                @if($invoice->status === 'pending_approval')
+                                    <span class="badge bg-warning text-dark">Pending Approval</span>
+                                @elseif($invoice->status === 'approved')
+                                    <span class="badge bg-success">Approved</span>
+                                @elseif($invoice->status === 'partial')
+                                    <span class="badge bg-info">Partially Paid</span>
+                                @elseif($invoice->status === 'paid')
+                                    <span class="badge bg-primary">Paid</span>
+                                @elseif($invoice->status === 'cancelled')
+                                    <span class="badge bg-danger">Cancelled</span>
+                                @else
+                                    <span class="badge bg-secondary">{{ ucfirst($invoice->status) }}</span>
+                                @endif
+                            </td>
                             <td>{{ $invoice->invoice_date->format('Y-m-d') }}</td>
                             <td>{{ $invoice->due_date?->format('Y-m-d') ?? '-' }}</td>
                             <td class="text-end">${{ number_format($invoice->total, 2) }}</td>

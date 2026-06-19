@@ -10,7 +10,9 @@ use App\Models\Item;
 use App\Models\ItemAccount;
 use App\Models\Location;
 use App\Models\SalesInvoice;
+use App\Models\SalesInvoiceItem;
 use App\Models\SalesOrder;
+use App\Models\SalesOrderItem;
 use App\Models\Subsidiary;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -215,6 +217,12 @@ class OrderToCashWorkflowTest extends TestCase
         $this->assertSame(10, $line->fresh()->quantity_invoiced);
         $this->assertSame('invoiced', $salesOrder->fresh()->status);
 
+        $this->actingAs($arAnalyst)
+            ->post(route('sales-invoices.submit', $invoice))
+            ->assertRedirect();
+
+        $this->assertSame('pending_approval', $invoice->fresh()->status);
+
         $accountingManager = $this->user('accounting_manager');
         $this->actingAs($accountingManager)
             ->post(route('sales-invoices.approve', $invoice))
@@ -323,6 +331,81 @@ class OrderToCashWorkflowTest extends TestCase
 
         $this->assertSame(0, $line->fresh()->quantity_fulfilled);
         $this->assertSame(0, InventoryStock::firstOrFail()->quantity_reserved);
+    }
+
+    public function test_invoice_requires_submission_before_accounting_approval(): void
+    {
+        $salesRep = $this->user('sales_representative');
+        $arAnalyst = $this->user('ar_analyst');
+        $accountingManager = $this->user('accounting_manager');
+
+        $salesOrder = SalesOrder::create([
+            'subsidiary_id' => $this->subsidiary->id,
+            'customer_id' => $this->customer->id,
+            'location_id' => $this->location->id,
+            'created_by' => $salesRep->id,
+            'so_number' => 'SO-APPROVAL',
+            'order_date' => '2026-06-20',
+            'status' => 'invoiced',
+            'currency_code' => 'USD',
+            'subtotal' => 200,
+            'total' => 200,
+        ]);
+
+        $salesOrderItem = SalesOrderItem::create([
+            'sales_order_id' => $salesOrder->id,
+            'item_id' => $this->item->id,
+            'quantity_ordered' => 1,
+            'quantity_fulfilled' => 1,
+            'quantity_packed' => 1,
+            'quantity_shipped' => 1,
+            'quantity_invoiced' => 1,
+            'unit_price' => 200,
+            'line_amount' => 200,
+        ]);
+
+        $invoice = SalesInvoice::create([
+            'subsidiary_id' => $this->subsidiary->id,
+            'customer_id' => $this->customer->id,
+            'sales_order_id' => $salesOrder->id,
+            'created_by' => $arAnalyst->id,
+            'invoice_number' => 'INV-APPROVAL',
+            'invoice_date' => '2026-06-20',
+            'status' => 'draft',
+            'currency_code' => 'USD',
+            'subtotal' => 200,
+            'total' => 200,
+        ]);
+
+        SalesInvoiceItem::create([
+            'sales_invoice_id' => $invoice->id,
+            'sales_order_item_id' => $salesOrderItem->id,
+            'item_id' => $this->item->id,
+            'description' => 'OTC Inventory Item',
+            'quantity' => 1,
+            'unit_price' => 200,
+            'line_amount' => 200,
+        ]);
+
+        $this->actingAs($accountingManager)
+            ->from(route('sales-invoices.show', $invoice))
+            ->post(route('sales-invoices.approve', $invoice))
+            ->assertSessionHasErrors('status');
+
+        $this->assertSame('draft', $invoice->fresh()->status);
+        $this->assertEquals(0, $this->arAccount->fresh()->balance);
+
+        $this->actingAs($arAnalyst)
+            ->post(route('sales-invoices.submit', $invoice))
+            ->assertRedirect();
+
+        $this->assertSame('pending_approval', $invoice->fresh()->status);
+
+        $this->actingAs($accountingManager)
+            ->post(route('sales-invoices.reject', $invoice))
+            ->assertRedirect();
+
+        $this->assertSame('draft', $invoice->fresh()->status);
     }
 
     private function account(string $number, string $name, string $type, float $balance = 0): Account
