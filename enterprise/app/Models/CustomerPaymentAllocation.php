@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CustomerPaymentAllocation extends Model
 {
     protected $fillable = [
-        'customer_payment_id', 'sales_invoice_id', 'amount_allocated'
+        'customer_payment_id', 'sales_invoice_id', 'amount_allocated',
+    ];
+
+    protected $casts = [
+        'amount_allocated' => 'decimal:2',
     ];
 
     public function payment(): BelongsTo

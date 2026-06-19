@@ -72,7 +72,7 @@
                                 @foreach($payment->allocations as $allocation)
                                 <tr>
                                     <td>
-                                        <a href="#" class="text-decoration-none">{{ $allocation->invoice->invoice_number }}</a>
+                                        <a href="{{ route('sales-invoices.show', $allocation->invoice) }}" class="text-decoration-none">{{ $allocation->invoice->invoice_number }}</a>
                                     </td>
                                     <td>${{ number_format($allocation->invoice->total, 2) }}</td>
                                     <td>${{ number_format($allocation->invoice->amount_paid, 2) }}</td>

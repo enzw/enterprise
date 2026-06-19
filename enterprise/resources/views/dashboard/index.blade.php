@@ -147,7 +147,7 @@
         @endif
 
         <!-- Sales (OTC) -->
-        @if(in_array(auth()->user()->current_role, ['admin', 'sales_representative', 'sales_manager']))
+        @if(in_array(auth()->user()->current_role, ['admin', 'sales_representative', 'sales_manager', 'inventory_manager', 'ar_analyst', 'accounting_manager']))
         <div class="col-md-6 col-xl-4">
             <div class="card h-100 card-interactive">
                 <div class="card-body d-flex flex-column p-4">
@@ -163,13 +163,20 @@
                         Register sales orders, verify customer credit parameters, manage invoices, and record incoming customer payments.
                     </p>
                     
-                    <div class="d-flex gap-2 mt-3 pt-3 border-top border-light">
+                    <div class="d-flex gap-2 mt-3 pt-3 border-top border-light flex-wrap">
                         <a href="{{ route('sales-orders.index') }}" class="btn btn-sm btn-light flex-grow-1">
                             <i class="bi bi-list-nested me-1"></i> View SOs
                         </a>
+                        @if(in_array(auth()->user()->current_role, ['admin', 'sales_representative']))
                         <a href="{{ route('sales-orders.create') }}" class="btn btn-sm btn-primary flex-grow-1">
                             <i class="bi bi-plus-lg me-1"></i> Create SO
                         </a>
+                        @endif
+                        @if(in_array(auth()->user()->current_role, ['admin', 'ar_analyst', 'accounting_manager', 'sales_manager']))
+                        <a href="{{ route('sales-invoices.index') }}" class="btn btn-sm btn-success flex-grow-1">
+                            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Invoices
+                        </a>
+                        @endif
                     </div>
                 </div>
             </div>

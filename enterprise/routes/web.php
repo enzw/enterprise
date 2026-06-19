@@ -9,6 +9,8 @@ use App\Http\Controllers\ItemReceiptController;
 use App\Http\Controllers\VendorBillController;
 use App\Http\Controllers\BillPaymentController;
 use App\Http\Controllers\SalesOrderController;
+use App\Http\Controllers\OrderFulfillmentController;
+use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\CustomerPaymentController;
 
 // Auth Routes
@@ -65,22 +67,43 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [SalesOrderController::class, 'index'])->name('sales-orders.index');
         Route::get('/create', [SalesOrderController::class, 'create'])->name('sales-orders.create');
         Route::post('/', [SalesOrderController::class, 'store'])->name('sales-orders.store');
-        Route::get('/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales-orders.show');
+        Route::get('/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales-orders.edit');
+        Route::put('/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales-orders.update');
         Route::post('/{salesOrder}/request-approval', [SalesOrderController::class, 'requestApproval'])->name('sales-orders.request-approval');
         Route::post('/{salesOrder}/approve', [SalesOrderController::class, 'approve'])->name('sales-orders.approve');
         Route::post('/{salesOrder}/reject', [SalesOrderController::class, 'reject'])->name('sales-orders.reject');
+        Route::post('/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales-orders.cancel');
+
+        Route::get('/{salesOrder}/pick', [OrderFulfillmentController::class, 'createPick'])->name('sales-orders.pick.create');
+        Route::post('/{salesOrder}/pick', [OrderFulfillmentController::class, 'storePick'])->name('sales-orders.pick.store');
+        Route::get('/{salesOrder}/pack', [OrderFulfillmentController::class, 'createPack'])->name('sales-orders.pack.create');
+        Route::post('/{salesOrder}/pack', [OrderFulfillmentController::class, 'storePack'])->name('sales-orders.pack.store');
+        Route::get('/{salesOrder}/ship', [OrderFulfillmentController::class, 'createShip'])->name('sales-orders.ship.create');
+        Route::post('/{salesOrder}/ship', [OrderFulfillmentController::class, 'storeShip'])->name('sales-orders.ship.store');
+
+        Route::get('/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales-orders.show');
     });
+
+    // Sales Invoices
+    Route::prefix('sales-invoices')->group(function () {
+        Route::get('/', [SalesInvoiceController::class, 'index'])->name('sales-invoices.index');
+        Route::get('/{invoice}', [SalesInvoiceController::class, 'show'])->name('sales-invoices.show');
+        Route::post('/{invoice}/approve', [SalesInvoiceController::class, 'approve'])->name('sales-invoices.approve');
+        Route::post('/{invoice}/cancel', [SalesInvoiceController::class, 'cancel'])->name('sales-invoices.cancel');
+    });
+    Route::get('/sales-orders/{salesOrder}/invoice', [SalesInvoiceController::class, 'create'])->name('sales-invoices.create');
+    Route::post('/sales-orders/{salesOrder}/invoice', [SalesInvoiceController::class, 'store'])->name('sales-invoices.store');
 
     // Customer Payments
     Route::prefix('payments')->group(function () {
         Route::get('/', [CustomerPaymentController::class, 'index'])->name('payments.index');
         Route::get('/create', [CustomerPaymentController::class, 'create'])->name('payments.create');
         Route::post('/', [CustomerPaymentController::class, 'store'])->name('payments.store');
-        Route::get('/{customerPayment}', [CustomerPaymentController::class, 'show'])->name('payments.show');
-        Route::get('/{customerPayment}/edit', [CustomerPaymentController::class, 'edit'])->name('payments.edit');
-        Route::put('/{customerPayment}', [CustomerPaymentController::class, 'update'])->name('payments.update');
-        Route::post('/{customerPayment}/allocate', [CustomerPaymentController::class, 'allocate'])->name('payments.allocate');
-        Route::delete('/allocations/{customerPaymentAllocation}', [CustomerPaymentController::class, 'removeAllocation'])->name('payments.remove-allocation');
         Route::get('/customer/{customerId}/invoices', [CustomerPaymentController::class, 'getCustomerInvoices'])->name('payments.customer-invoices');
+        Route::get('/{payment}/edit', [CustomerPaymentController::class, 'edit'])->name('payments.edit');
+        Route::put('/{payment}', [CustomerPaymentController::class, 'update'])->name('payments.update');
+        Route::post('/{payment}/allocate', [CustomerPaymentController::class, 'allocate'])->name('payments.allocate');
+        Route::delete('/allocations/{allocation}', [CustomerPaymentController::class, 'removeAllocation'])->name('payments.remove-allocation');
+        Route::get('/{payment}', [CustomerPaymentController::class, 'show'])->name('payments.show');
     });
 });

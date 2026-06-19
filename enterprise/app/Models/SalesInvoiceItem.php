@@ -9,7 +9,12 @@ class SalesInvoiceItem extends Model
 {
     protected $fillable = [
         'sales_invoice_id', 'sales_order_item_id', 'item_id',
-        'description', 'quantity', 'unit_price', 'line_amount'
+        'description', 'quantity', 'unit_price', 'line_amount',
+    ];
+
+    protected $casts = [
+        'unit_price' => 'decimal:2',
+        'line_amount' => 'decimal:2',
     ];
 
     public function invoice(): BelongsTo

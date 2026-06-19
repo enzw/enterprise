@@ -28,7 +28,7 @@
                                     <select name="customer_id" id="customer_id" class="form-control @error('customer_id') is-invalid @enderror" required>
                                         <option value="">Select Customer</option>
                                         @foreach($customers as $customer)
-                                        <option value="{{ $customer->id }}" @if(old('customer_id') == $customer->id) selected @endif>
+                                        <option value="{{ $customer->id }}" @if(old('customer_id', $selectedCustomerId) == $customer->id) selected @endif>
                                             {{ $customer->name }} ({{ $customer->customer_code }})
                                         </option>
                                         @endforeach
@@ -53,7 +53,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Payment Amount *</label>
-                                    <input type="number" name="amount" id="payment_amount" class="form-control @error('amount') is-invalid @enderror" step="0.01" min="0" value="{{ old('amount') }}" required>
+                                    <input type="number" name="amount" id="payment_amount" class="form-control @error('amount') is-invalid @enderror" step="0.01" min="0.01" value="{{ old('amount') }}" required>
                                     @error('amount')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -148,7 +148,7 @@
                             <h6 class="text-warning">$<span id="display_unallocated">0.00</span></h6>
                         </div>
                         <hr>
-                        <button type="submit" class="btn btn-success w-100">Record Payment</button>
+                        <button type="submit" class="btn btn-success w-100">Record & Post Payment</button>
                         <a href="{{ route('payments.index') }}" class="btn btn-secondary w-100 mt-2">Cancel</a>
                     </div>
                 </div>
@@ -246,6 +246,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial update
     updateAmounts();
+    if (customerSelect.value) {
+        customerSelect.dispatchEvent(new Event('change'));
+    }
 });
 </script>
 @endsection

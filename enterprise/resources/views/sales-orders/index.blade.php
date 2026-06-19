@@ -25,6 +25,7 @@
                         <th>Status</th>
                         <th>Order Date</th>
                         <th>Delivery Date</th>
+                        <th>Warehouse</th>
                         <th>Total</th>
                         <th>Actions</th>
                     </tr>
@@ -43,14 +44,21 @@
                                 <span class="badge bg-success">Approved</span>
                             @elseif($so->status === 'fulfilled')
                                 <span class="badge bg-primary">Fulfilled</span>
-                            @elseif($so->status === 'closed')
-                                <span class="badge bg-dark">Closed</span>
+                            @elseif($so->status === 'packed')
+                                <span class="badge bg-info">Packed</span>
+                            @elseif($so->status === 'shipped')
+                                <span class="badge bg-dark">Shipped</span>
+                            @elseif($so->status === 'invoiced')
+                                <span class="badge bg-success">Invoiced</span>
+                            @elseif($so->status === 'cancelled')
+                                <span class="badge bg-danger">Cancelled</span>
                             @else
                                 <span class="badge bg-info">{{ ucfirst(str_replace('_', ' ', $so->status)) }}</span>
                             @endif
                         </td>
                         <td>{{ $so->order_date }}</td>
                         <td>{{ $so->requested_delivery_date ?? '-' }}</td>
+                        <td>{{ $so->location->name ?? '-' }}</td>
                         <td>${{ number_format($so->total, 2) }}</td>
                         <td>
                             <a href="{{ route('sales-orders.show', $so) }}" class="btn btn-sm btn-primary">View</a>
@@ -58,7 +66,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">No Sales Orders found</td>
+                        <td colspan="8" class="text-center text-muted py-4">No Sales Orders found</td>
                     </tr>
                     @endforelse
                 </tbody>

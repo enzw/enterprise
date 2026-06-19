@@ -12,12 +12,16 @@ class SalesInvoice extends Model
         'subsidiary_id', 'customer_id', 'sales_order_id', 'created_by',
         'invoice_number', 'invoice_date', 'due_date', 'status',
         'currency_code', 'subtotal', 'tax_amount', 'total', 'amount_paid',
-        'memo'
+        'memo',
     ];
 
     protected $casts = [
         'invoice_date' => 'date',
         'due_date' => 'date',
+        'subtotal' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'total' => 'decimal:2',
+        'amount_paid' => 'decimal:2',
     ];
 
     public function subsidiary(): BelongsTo

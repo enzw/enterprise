@@ -9,14 +9,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SalesOrder extends Model
 {
     protected $fillable = [
-        'subsidiary_id', 'customer_id', 'created_by', 'approved_by',
+        'subsidiary_id', 'customer_id', 'location_id', 'created_by', 'approved_by',
         'so_number', 'po_reference', 'order_date', 'requested_delivery_date',
         'status', 'currency_code', 'subtotal', 'tax_amount', 'total',
-        'memo', 'approved_at'
+        'memo', 'approved_at',
     ];
 
     protected $casts = [
+        'order_date' => 'date',
+        'requested_delivery_date' => 'date',
         'approved_at' => 'datetime',
+        'subtotal' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'total' => 'decimal:2',
     ];
 
     public function subsidiary(): BelongsTo
@@ -27,6 +32,11 @@ class SalesOrder extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
     }
 
     public function createdBy(): BelongsTo

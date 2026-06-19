@@ -579,15 +579,22 @@
         </div>
         @endif
 
-        @if(in_array(auth()->user()->current_role, ['admin', 'sales_representative', 'sales_manager']))
+        @if(in_array(auth()->user()->current_role, ['admin', 'sales_representative', 'sales_manager', 'inventory_manager', 'ar_analyst', 'accounting_manager']))
         <div class="nav-section">
             <h6>Sales (OTC)</h6>
-            <a href="{{ route('sales-orders.index') }}" class="{{ request()->routeIs('sales-orders.index') ? 'active' : '' }}">
+            <a href="{{ route('sales-orders.index') }}" class="{{ request()->routeIs('sales-orders.*') ? 'active' : '' }}">
                 <i class="bi bi-cart"></i> Sales Orders
             </a>
+            @if(in_array(auth()->user()->current_role, ['admin', 'sales_representative']))
             <a href="{{ route('sales-orders.create') }}" class="{{ request()->routeIs('sales-orders.create') ? 'active' : '' }}">
                 <i class="bi bi-cart-plus"></i> Create SO
             </a>
+            @endif
+            @if(in_array(auth()->user()->current_role, ['admin', 'ar_analyst', 'accounting_manager', 'sales_manager']))
+            <a href="{{ route('sales-invoices.index') }}" class="{{ request()->routeIs('sales-invoices.*') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Sales Invoices
+            </a>
+            @endif
         </div>
         @endif
 
