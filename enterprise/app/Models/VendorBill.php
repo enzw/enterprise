@@ -3,20 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VendorBill extends Model
 {
     protected $table = 'vendor_bills';
+
     protected $fillable = [
         'subsidiary_id', 'vendor_id', 'purchase_order_id', 'created_by', 'approved_by',
         'bill_number', 'reference_no', 'bill_date', 'due_date', 'status',
-        'subtotal', 'tax_amount', 'total', 'amount_paid', 'memo', 'approved_at'
+        'subtotal', 'tax_amount', 'total', 'amount_paid', 'memo', 'approved_at',
     ];
 
     protected $casts = [
+        'bill_date' => 'date',
+        'due_date' => 'date',
         'approved_at' => 'datetime',
+        'subtotal' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'total' => 'decimal:2',
+        'amount_paid' => 'decimal:2',
     ];
 
     public function subsidiary(): BelongsTo

@@ -3,15 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PurchaseOrder extends Model
 {
     protected $fillable = [
         'subsidiary_id', 'vendor_id', 'location_id', 'created_by',
         'po_number', 'external_po_number', 'order_date', 'expected_delivery_date',
-        'status', 'memo', 'subtotal', 'tax_amount', 'total'
+        'status', 'memo', 'subtotal', 'tax_amount', 'total',
+    ];
+
+    protected $casts = [
+        'order_date' => 'date',
+        'expected_delivery_date' => 'date',
+        'subtotal' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'total' => 'decimal:2',
     ];
 
     public function vendor(): BelongsTo

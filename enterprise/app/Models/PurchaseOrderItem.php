@@ -10,7 +10,12 @@ class PurchaseOrderItem extends Model
     protected $fillable = [
         'purchase_order_id', 'item_id', 'department_id',
         'quantity_ordered', 'quantity_received', 'quantity_billed',
-        'unit_price', 'line_amount'
+        'unit_price', 'line_amount',
+    ];
+
+    protected $casts = [
+        'unit_price' => 'decimal:2',
+        'line_amount' => 'decimal:2',
     ];
 
     public function purchaseOrder(): BelongsTo

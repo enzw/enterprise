@@ -21,6 +21,17 @@
                     <button type="submit" class="btn btn-danger" onclick="return confirm('Reject this Vendor Bill?')">Reject Bill</button>
                 </form>
             @endif
+
+            @if(in_array(auth()->user()->current_role, ['admin', 'ap_analyst']) && $bill->status === 'draft')
+                <form method="POST" action="{{ route('bills.submit', $bill) }}" style="display:inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-warning">Resubmit Bill</button>
+                </form>
+            @endif
+
+            @if(in_array(auth()->user()->current_role, ['admin', 'ap_analyst']) && in_array($bill->status, ['approved', 'partial']))
+                <a href="{{ route('bill-payments.create', $bill) }}" class="btn btn-success">Record Payment</a>
+            @endif
         </div>
     </div>
 
@@ -42,6 +53,8 @@
                                     <span class="badge bg-warning text-dark">Pending Approval</span>
                                 @elseif($bill->status === 'approved')
                                     <span class="badge bg-success text-white">Approved</span>
+                                @elseif($bill->status === 'partial')
+                                    <span class="badge bg-info text-white">Partially Paid</span>
                                 @elseif($bill->status === 'paid')
                                     <span class="badge bg-primary text-white">Paid</span>
                                 @else
@@ -157,7 +170,6 @@
                         <td colspan="4" class="text-end"><strong>Total:</strong></td>
                         <td class="text-end text-success"><strong>${{ number_format($bill->total, 2) }}</strong></td>
                     </tr>
-                    @if($bill->amount_paid > 0)
                     <tr>
                         <td colspan="4" class="text-end"><strong>Amount Paid:</strong></td>
                         <td class="text-end"><strong>${{ number_format($bill->amount_paid, 2) }}</strong></td>
@@ -166,8 +178,42 @@
                         <td colspan="4" class="text-end"><strong>Balance Due:</strong></td>
                         <td class="text-end text-danger"><strong>${{ number_format(max(0, $bill->total - $bill->amount_paid), 2) }}</strong></td>
                     </tr>
-                    @endif
                 </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Payment History</h5>
+            <span class="badge bg-light text-dark">{{ $bill->payments->count() }} payment(s)</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>Method</th>
+                        <th>Cash Account</th>
+                        <th>Reference</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($bill->payments as $payment)
+                        <tr>
+                            <td><a href="{{ route('bill-payments.show', $payment) }}">BP-{{ str_pad($payment->id, 6, '0', STR_PAD_LEFT) }}</a></td>
+                            <td>{{ $payment->payment_date->format('Y-m-d') }}</td>
+                            <td>{{ str_replace('_', ' ', ucfirst($payment->payment_method)) }}</td>
+                            <td>{{ $payment->cashAccount->number }} - {{ $payment->cashAccount->name }}</td>
+                            <td>{{ $payment->reference_no ?? '-' }}</td>
+                            <td class="text-end"><strong>${{ number_format($payment->amount, 2) }}</strong></td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="6" class="text-center text-muted py-3">No payments recorded</td></tr>
+                    @endforelse
+                </tbody>
             </table>
         </div>
     </div>

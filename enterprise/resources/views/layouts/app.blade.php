@@ -573,6 +573,9 @@
             <a href="{{ route('bills.create') }}" class="{{ request()->routeIs('bills.create') ? 'active' : '' }}">
                 <i class="bi bi-receipt-cutoff"></i> Create Bill
             </a>
+            <a href="{{ route('bill-payments.index') }}" class="{{ request()->routeIs('bill-payments.*') ? 'active' : '' }}">
+                <i class="bi bi-cash-stack"></i> Vendor Payments
+            </a>
         </div>
         @endif
 

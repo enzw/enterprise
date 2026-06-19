@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InventoryStock extends Model
 {
+    protected $table = 'inventory_stock';
+
     protected $fillable = [
-        'item_id', 'location_id', 'quantity_on_hand', 
-        'quantity_on_order', 'quantity_reserved'
+        'item_id', 'location_id', 'quantity_on_hand',
+        'quantity_on_order', 'quantity_reserved',
     ];
 
     public function item(): BelongsTo

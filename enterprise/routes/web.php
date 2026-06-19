@@ -7,6 +7,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\ItemReceiptController;
 use App\Http\Controllers\VendorBillController;
+use App\Http\Controllers\BillPaymentController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\CustomerPaymentController;
 
@@ -46,9 +47,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', [VendorBillController::class, 'create'])->name('bills.create');
         Route::post('/', [VendorBillController::class, 'store'])->name('bills.store');
         Route::get('/{bill}', [VendorBillController::class, 'show'])->name('bills.show');
+        Route::post('/{bill}/submit', [VendorBillController::class, 'submit'])->name('bills.submit');
         Route::post('/{bill}/approve', [VendorBillController::class, 'approve'])->name('bills.approve');
         Route::post('/{bill}/reject', [VendorBillController::class, 'reject'])->name('bills.reject');
     });
+
+    // Vendor Bill Payments
+    Route::prefix('bill-payments')->group(function () {
+        Route::get('/', [BillPaymentController::class, 'index'])->name('bill-payments.index');
+        Route::get('/{payment}', [BillPaymentController::class, 'show'])->name('bill-payments.show');
+    });
+    Route::get('/bills/{bill}/payments/create', [BillPaymentController::class, 'create'])->name('bill-payments.create');
+    Route::post('/bills/{bill}/payments', [BillPaymentController::class, 'store'])->name('bill-payments.store');
 
     // Sales Orders
     Route::prefix('sales-orders')->group(function () {

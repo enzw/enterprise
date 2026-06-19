@@ -10,11 +10,12 @@ class BillPayment extends Model
     protected $fillable = [
         'vendor_bill_id', 'ap_account_id', 'cash_account_id',
         'created_by', 'amount', 'payment_date', 'payment_method',
-        'reference_no', 'memo'
+        'reference_no', 'memo',
     ];
 
     protected $casts = [
         'payment_date' => 'date',
+        'amount' => 'decimal:2',
     ];
 
     public function bill(): BelongsTo

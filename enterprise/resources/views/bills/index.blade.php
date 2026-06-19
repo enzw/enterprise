@@ -27,6 +27,7 @@
                         <th>Bill Date</th>
                         <th>Due Date</th>
                         <th>Total</th>
+                        <th>Balance Due</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -49,6 +50,8 @@
                                 <span class="badge bg-warning text-dark">Pending Approval</span>
                             @elseif($bill->status === 'approved')
                                 <span class="badge bg-success">Approved</span>
+                            @elseif($bill->status === 'partial')
+                                <span class="badge bg-info">Partially Paid</span>
                             @elseif($bill->status === 'paid')
                                 <span class="badge bg-primary">Paid</span>
                             @else
@@ -58,13 +61,17 @@
                         <td>{{ $bill->bill_date }}</td>
                         <td>{{ $bill->due_date ?? '-' }}</td>
                         <td>${{ number_format($bill->total, 2) }}</td>
+                        <td>${{ number_format(max(0, $bill->total - $bill->amount_paid), 2) }}</td>
                         <td>
                             <a href="{{ route('bills.show', $bill) }}" class="btn btn-sm btn-primary">View</a>
+                            @if(in_array(auth()->user()->current_role, ['admin', 'ap_analyst']) && in_array($bill->status, ['approved', 'partial']))
+                                <a href="{{ route('bill-payments.create', $bill) }}" class="btn btn-sm btn-success">Pay</a>
+                            @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-4">No Vendor Bills found</td>
+                        <td colspan="9" class="text-center text-muted py-4">No Vendor Bills found</td>
                     </tr>
                     @endforelse
                 </tbody>

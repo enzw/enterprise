@@ -9,6 +9,11 @@ class Account extends Model
 {
     protected $fillable = ['subsidiary_id', 'number', 'name', 'type', 'balance', 'is_active'];
 
+    protected $casts = [
+        'balance' => 'decimal:2',
+        'is_active' => 'boolean',
+    ];
+
     public function subsidiary(): BelongsTo
     {
         return $this->belongsTo(Subsidiary::class);

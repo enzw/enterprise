@@ -9,7 +9,12 @@ class VendorBillItem extends Model
 {
     protected $fillable = [
         'vendor_bill_id', 'purchase_order_item_id', 'item_id',
-        'description', 'quantity', 'unit_price', 'line_amount'
+        'description', 'quantity', 'unit_price', 'line_amount',
+    ];
+
+    protected $casts = [
+        'unit_price' => 'decimal:2',
+        'line_amount' => 'decimal:2',
     ];
 
     public function bill(): BelongsTo
