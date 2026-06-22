@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ItemReceiptItem extends Model
 {
     protected $fillable = [
-        'item_receipt_id', 'purchase_order_item_id', 'quantity_received', 'notes'
+        'item_receipt_id', 'purchase_order_item_id', 'item_id', 'quantity_received', 'notes'
     ];
 
     public function receipt(): BelongsTo
@@ -19,5 +19,10 @@ class ItemReceiptItem extends Model
     public function poItem(): BelongsTo
     {
         return $this->belongsTo(PurchaseOrderItem::class, 'purchase_order_item_id');
+    }
+
+    public function item(): BelongsTo
+    {
+        return $this->belongsTo(Item::class);
     }
 }

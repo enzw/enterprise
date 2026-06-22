@@ -32,4 +32,24 @@ class PurchaseOrderItem extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function receiptItems()
+    {
+        return $this->hasMany(ItemReceiptItem::class);
+    }
+
+    public function billItems()
+    {
+        return $this->hasMany(VendorBillItem::class);
+    }
+
+    public function getRemainingReceivableQuantityAttribute(): int
+    {
+        return max(0, $this->quantity_ordered - $this->quantity_received);
+    }
+
+    public function getRemainingBillableQuantityAttribute(): int
+    {
+        return max(0, $this->quantity_received - $this->quantity_billed);
+    }
 }

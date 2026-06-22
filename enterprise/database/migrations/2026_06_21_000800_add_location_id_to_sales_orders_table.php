@@ -11,12 +11,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('sales_orders', function (Blueprint $table) {
-            // Add the missing foreign key column.
-            $table->foreignId('location_id')
-                  ->nullable()
-                  ->after('customer_id')
-                  ->constrained('locations')
-                  ->cascadeOnDelete();
+            if (! Schema::hasColumn('sales_orders', 'location_id')) {
+                $table->foreignId('location_id')
+                    ->nullable()
+                    ->after('customer_id')
+                    ->constrained('locations')
+                    ->cascadeOnDelete();
+            }
         });
     }
 
@@ -25,8 +26,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('sales_orders', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('location_id');
-        });
+        if (Schema::hasColumn('sales_orders', 'location_id')) {
+            Schema::table('sales_orders', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('location_id');
+            });
+        }
     }
 };

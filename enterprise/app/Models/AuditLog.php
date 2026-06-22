@@ -16,11 +16,16 @@ class AuditLog extends Model
         'event',
         'old_values',
         'new_values',
+        'reason',
+        'ip_address',
+        'user_agent',
+        'metadata',
     ];
 
     protected $casts = [
         'old_values' => 'array',
         'new_values' => 'array',
+        'metadata' => 'array',
     ];
 
     public function auditable()

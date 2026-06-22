@@ -9,7 +9,8 @@ class VendorBillItem extends Model
 {
     protected $fillable = [
         'vendor_bill_id', 'purchase_order_item_id', 'item_id',
-        'description', 'quantity', 'unit_price', 'line_amount',
+        'expense_account_id', 'department_id', 'description', 'quantity',
+        'unit_price', 'line_amount',
     ];
 
     protected $casts = [
@@ -30,5 +31,15 @@ class VendorBillItem extends Model
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function expenseAccount(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'expense_account_id');
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
     }
 }
