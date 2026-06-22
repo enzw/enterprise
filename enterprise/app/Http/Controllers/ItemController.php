@@ -105,7 +105,7 @@ class ItemController extends Controller
     // Admin can view all stocks for an item
     public function manageStocks(Item $item)
     {
-        $this->checkRole('admin');
+        $this->checkRole('purchasing_manager', 'admin');
         $locations = Location::all();
         $stocks = [];
         foreach ($locations as $loc) {
@@ -121,7 +121,7 @@ class ItemController extends Controller
     // Admin can edit stock for a specific location
     public function editStock(Item $item, Location $location)
     {
-        $this->checkRole('admin');
+        $this->checkRole('purchasing_manager', 'admin');
         $stock = InventoryStock::firstOrCreate([
             'item_id' => $item->id,
             'location_id' => $location->id,
@@ -131,7 +131,7 @@ class ItemController extends Controller
 
     public function updateStock(Request $request, Item $item, Location $location)
     {
-        $this->checkRole('admin');
+        $this->checkRole('purchasing_manager', 'admin');
         $validated = $request->validate([
             'quantity_on_hand' => 'required|integer|min:0',
         ]);
