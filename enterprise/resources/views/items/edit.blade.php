@@ -154,6 +154,9 @@
                             </div>
                         </div>
                     </form>
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{{ route('items.manageStocks', $item) }}" class="btn btn-outline-primary">Manage Stock</a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -25,6 +25,10 @@ Route::middleware('auth')->group(function () {
 
     // Items Management
     Route::resource('items', ItemController::class);
+    // Stock management routes for admin
+    Route::get('items/{item}/stocks', [ItemController::class, 'manageStocks'])->name('items.manageStocks');
+    Route::get('items/{item}/stock/{location}/edit', [ItemController::class, 'editStock'])->name('items.editStock');
+    Route::post('items/{item}/stock/{location}', [ItemController::class, 'updateStock'])->name('items.updateStock');
 
     // Purchase Orders
     Route::prefix('purchase-orders')->group(function () {
@@ -73,14 +77,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/{salesOrder}/approve', [SalesOrderController::class, 'approve'])->name('sales-orders.approve');
         Route::post('/{salesOrder}/reject', [SalesOrderController::class, 'reject'])->name('sales-orders.reject');
         Route::post('/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales-orders.cancel');
-
         Route::get('/{salesOrder}/pick', [OrderFulfillmentController::class, 'createPick'])->name('sales-orders.pick.create');
         Route::post('/{salesOrder}/pick', [OrderFulfillmentController::class, 'storePick'])->name('sales-orders.pick.store');
         Route::get('/{salesOrder}/pack', [OrderFulfillmentController::class, 'createPack'])->name('sales-orders.pack.create');
         Route::post('/{salesOrder}/pack', [OrderFulfillmentController::class, 'storePack'])->name('sales-orders.pack.store');
         Route::get('/{salesOrder}/ship', [OrderFulfillmentController::class, 'createShip'])->name('sales-orders.ship.create');
         Route::post('/{salesOrder}/ship', [OrderFulfillmentController::class, 'storeShip'])->name('sales-orders.ship.store');
-
         Route::get('/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales-orders.show');
     });
 

@@ -319,7 +319,7 @@ class CustomerPaymentController extends Controller
     private function openInvoices(int $customerId)
     {
         return SalesInvoice::where('customer_id', $customerId)
-            ->whereIn('status', ['approved', 'partial'])
+            ->whereIn('status', ['approved', 'partial', 'pending_approval'])
             ->whereColumn('amount_paid', '<', 'total')
             ->orderBy('due_date')
             ->get();

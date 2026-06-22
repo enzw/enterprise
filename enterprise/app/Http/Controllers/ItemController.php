@@ -7,6 +7,8 @@ use App\Models\ItemAccount;
 use App\Models\Account;
 use App\Models\TaxSchedule;
 use App\Models\Subsidiary;
+use App\Models\InventoryStock;
+use App\Models\Location;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -100,11 +102,46 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('success', 'Item updated successfully');
     }
 
-    public function destroy(Item $item)
+    // Admin can view all stocks for an item
+    public function manageStocks(Item $item)
     {
         $this->checkRole('admin');
-        $item->accounts()->delete();
-        $item->delete();
-        return redirect()->route('items.index')->with('success', 'Item deleted successfully');
+        $locations = Location::all();
+        $stocks = [];
+        foreach ($locations as $loc) {
+            $stock = InventoryStock::firstOrCreate([
+                'item_id' => $item->id,
+                'location_id' => $loc->id,
+            ], ['quantity_on_hand' => 0]);
+            $stocks[] = ['location' => $loc, 'stock' => $stock];
+        }
+        return view('items.manage_stocks', compact('item', 'stocks'));
     }
+
+    // Admin can edit stock for a specific location
+    public function editStock(Item $item, Location $location)
+    {
+        $this->checkRole('admin');
+        $stock = InventoryStock::firstOrCreate([
+            'item_id' => $item->id,
+            'location_id' => $location->id,
+        ], ['quantity_on_hand' => 0]);
+        return view('items.edit_stock', compact('item', 'stock', 'location'));
+    }
+
+    public function updateStock(Request $request, Item $item, Location $location)
+    {
+        $this->checkRole('admin');
+        $validated = $request->validate([
+            'quantity_on_hand' => 'required|integer|min:0',
+        ]);
+        $stock = InventoryStock::firstOrCreate([
+            'item_id' => $item->id,
+            'location_id' => $location->id,
+        ]);
+        $stock->update(['quantity_on_hand' => $validated['quantity_on_hand']]);
+        return redirect()->route('items.manageStocks', $item)->with('success', 'Stock updated successfully');
+    }
+
+
 }

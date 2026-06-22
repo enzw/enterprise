@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\SalesOrder;
+use App\Observers\SalesOrderObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
